@@ -10,8 +10,8 @@ sub thing
 
 * hello there:*
 
-> cmd_example /path/to/somewhere
+    > cmd_example /path/to/somewhere
 
-~/Dropbox
+    ~/Dropbox
 
 inline stuff 'super+f2'
