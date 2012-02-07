@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import itertools as it
-import numpy as np
-# from misctools import datestamp
 from collections import OrderedDict as odict
 
 # see: http://stackoverflow.com/questions/5228158/cartesian-product-of-a-dictionary-of-lists
@@ -34,52 +32,41 @@ class Sweeper(object):
     of looping over nested loops
     """
 
-    import itertools as it
-    # import numpy as np
-    # from misctools import datestamp
-    from collections import OrderedDict as odict
-
     def __init__(self, *args):
         self.sweep_dict = odict()
         for a in args:
             self.sweep_dict.update(a)
 
+        self.looper = self.loop_generator()
+
+    def loop_generator(self):
+        for p in it.product(*self.sweep_dict.values()):
+            yield dict(zip(self.sweep_dict.keys(), p))
+
 
 if __name__ == '__main__':
 
-    # use odict to control the loop order of the entries
-    input_dict = odict()
-    input_dict['g'] = np.arange(8, 10)
-    input_dict['s'] = np.arange(11, 15)
-    input_dict['bs'] = np.arange(3, 5)
 
-    print input_dict
+    sw = Sweeper({'a': [1, 2, 2]},
+                 {'b': range(6)},
+                 {'stringjoe': ['per', 'er', 'l33t', 'haxx0r']})
 
-    dict1 = {'s': 1,
-             'as': 'sad'}
+    default_params1 = {'a': 5,
+                       'c': 66,
+                       'stringjoe': 'a string!'}
 
-    dict2 = {'g': 1,
-             'as': 'sad'}
+    default_params2 = {'b': 2,
+                       's': 66,
+                       'stringjoe': 'a string!'}
 
-    print dict1
-    print dict2
+    print 'default_params1', default_params1
+    print 'default_params2', default_params2
 
-    # update_dict_if_key_exists(dict1, input_dict)
-    # update_dict_if_key_exists(dict2, input_dict)
+    for params in sw.looper:
+        update_dict_if_key_exists(default_params1, params)
+        update_dict_if_key_exists(default_params2, params)
 
-    # print dict1
-    # print dict2
-
-    testdict = {}
-
-    results = []
-    for p in it.product(*input_dict.values()):
-        kws = dict(zip(input_dict.keys(), p))
-        print kws
-        update_dict_if_key_exists(dict1, kws)
-        update_dict_if_key_exists(dict2, kws)
-        print dict1
-        print dict2
+        print 'updated default_params1', default_params1
+        print 'updated default_params2', default_params2
         print '*' * 5
-        # laser(dict1, dict2)
-        # results.append(np.prod(p))
+
