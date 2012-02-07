@@ -46,11 +46,13 @@ class Sweeper(object):
 
 if __name__ == '__main__':
 
-
+    # define the dict keys and values to loop over like this. the order they
+    # are added determines at which level they are in the nested for loop
     sw = Sweeper({'a': [1, 2, 2]},
                  {'b': range(6)},
                  {'stringjoe': ['per', 'er', 'l33t', 'haxx0r']})
 
+    # dicts containing default parameters
     default_params1 = {'a': 5,
                        'c': 66,
                        'stringjoe': 'a string!'}
@@ -62,7 +64,9 @@ if __name__ == '__main__':
     print 'default_params1', default_params1
     print 'default_params2', default_params2
 
+    # the self.looper attribute is to be looped over
     for params in sw.looper:
+        # update default parameter dicts
         update_dict_if_key_exists(default_params1, params)
         update_dict_if_key_exists(default_params2, params)
 
@@ -70,3 +74,4 @@ if __name__ == '__main__':
         print 'updated default_params2', default_params2
         print '*' * 5
 
+        # pass dicts to whatever and save results
