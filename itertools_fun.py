@@ -3,8 +3,7 @@
 import itertools as it
 from collections import OrderedDict as odict
 
-# inspiration from these sources:
-# http://stackoverflow.com/questions/5228158/cartesian-product-of-a-dictionary-of-lists
+# see: http://stackoverflow.com/questions/5228158/cartesian-product-of-a-dictionary-of-lists
 
 
 def update_dict_if_key_exists(updatee, updater):
@@ -20,6 +19,11 @@ def update_dict_if_key_exists(updatee, updater):
     updatee is updated in-place, method style
     """
     updatee.update({k: v for k, v in updater.iteritems() if k in updatee.keys()})
+
+
+def how_does_dict_pass(*args):
+    for a in args:
+        print a
 
 
 class Sweeper(object):
