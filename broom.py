@@ -2,6 +2,7 @@
 
 import itertools as it
 from collections import OrderedDict as odict
+import numpy as np
 
 # inspiration from these sources:
 # http://stackoverflow.com/questions/5228158/cartesian-product-of-a-dictionary-of-lists
@@ -28,14 +29,29 @@ class Sweeper(object):
     of looping over nested loops
     """
 
-    def __init__(self, *args):
+    def __init__(self, dicts, result_names=None):
+        # add input dicts to OrderedDict
         self.sweep_dict = odict()
-        for a in args:
+        for a in dicts:
             self.sweep_dict.update(a)
 
-        self.looper = self.loop_generator()
+        self._create_results_dict(result_names)
 
-    def loop_generator(self):
+        # generator object
+        self.looper = self._loop_generator()
+
+    def _create_results_dict(self, result_names):
+        if result_names is not None:
+            # find results array shape
+            res_shape = [len(x) for x in self.sweep_dict.values()]
+            nan_array = np.zeros(res_shape).astype(object)
+            nan_array[:] = np.nan
+
+            self.results = {}
+            for name in result_names:
+                self.results.update({name: nan_array})
+
+    def _loop_generator(self):
         for p in it.product(*self.sweep_dict.values()):
             yield dict(zip(self.sweep_dict.keys(), p))
 
