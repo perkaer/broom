@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import broom
-import numpy as np
-
 
 # define the dict keys and values to loop over like this. the order they
 # are added determines at which level they are in the nested for loop
@@ -21,8 +19,18 @@ default_params2 = {'b': 2,
                    's': 22,
                    'stringjoe': 'another string!'}
 
-print 'default_params1', default_params1
-print 'default_params2', default_params2
+# save the original default parameters in sweeper object
+# to self.default_params
+sw.save_default_params(default_params1, default_params2)
+
+
+def calculate_stuff1(a=1, c=4, stringjoe='joe'):
+    return (a * c) ** 2
+
+
+def calculate_stuff2(b=2, s=5, stringjoe='moe'):
+    return (b * s) ** 2
+
 
 # the self.looper attribute is to be looped over
 for params in sw.looper:
@@ -30,8 +38,6 @@ for params in sw.looper:
     broom.update_dict_if_key_exists(default_params1, params)
     broom.update_dict_if_key_exists(default_params2, params)
 
-    print 'updated default_params1', default_params1
-    print 'updated default_params2', default_params2
-    print '*' * 5
-
-    # pass dicts to whatever and save results
+    # calculate and append to self.results
+    sw.append('res1', calculate_stuff1(**default_params1))
+    sw.append('res2', calculate_stuff2(**default_params2))
