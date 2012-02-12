@@ -50,12 +50,17 @@ class Sweeper(object):
 
             self.results = {}
             for name in result_names:
-                self.results.update({name: nan_array})
+                self.results.update({name: nan_array.copy()})
 
-    def save_default_params(self, *dicts):
-        self.default_params = []
+    def orig_default_params(self, *dicts):
+        self.orig_default_params = []
         # do a copy of default params
         dicts = deepcopy(dicts)
+        for d in dicts:
+            self.orig_default_params.append(d)
+
+    def default_params(self, *dicts):
+        self.default_params = []
         for d in dicts:
             self.default_params.append(d)
 
