@@ -20,9 +20,7 @@ default_params2 = {'a': 1,
                    's': 6,
                    'stringjoe': 'another string!'}
 
-# save the original default parameters in sweeper object
-# to self.default_params
-sw.orig_default_params(default_params1, default_params2)
+# set default parameters dicts to updated
 sw.default_params(default_params1, default_params2)
 
 
@@ -35,14 +33,15 @@ def calculate_stuff2(a=7, b=2, s=5, stringjoe='moe'):
 
 
 # the self.looper attribute is to be looped over
-for params in sw.looper:
-    # update default parameter dicts
-    broom.update_dict_if_key_exists(default_params1, params)
-    broom.update_dict_if_key_exists(default_params2, params)
+for how_far, params in sw.looper:
+    print 'how far:', how_far, ', with params', params
 
-    # calculate and append to self.results
+    # calculate results, the default param dicts are updated automagically
     res1 = calculate_stuff1(**default_params1)
     res2 = calculate_stuff2(**default_params2)
 
+    # append results
     sw.append('res1', res1)
     sw.append('res2', res2)
+
+print sw.results

@@ -44,20 +44,14 @@ class Sweeper(object):
     def _create_results_dict(self, result_names):
         if result_names is not None:
             # find results array shape
-            self._sweep_shape = [len(x) for x in self.sweep_dict.values()]
+            self._sweep_shape = \
+            np.array([len(x) for x in self.sweep_dict.values()])
             nan_array = np.zeros(self._sweep_shape).astype(object)
             nan_array[:] = np.nan
 
             self.results = {}
             for name in result_names:
                 self.results.update({name: nan_array.copy()})
-
-    def orig_default_params(self, *dicts):
-        self.orig_default_params = []
-        # do a copy of default params
-        dicts = deepcopy(dicts)
-        for d in dicts:
-            self.orig_default_params.append(d)
 
     def default_params(self, *dicts):
         self.default_params = []
@@ -74,7 +68,17 @@ class Sweeper(object):
         self._mult_idx = np.unravel_index(self._n_loop, self._sweep_shape)
         self.results[result_name][self._mult_idx] = result
 
+    def _how_far(self):
+        where_now = \
+        np.array(np.unravel_index(self._n_loop, self._sweep_shape), dtype=float)
+        how_far = list(100 * (1 + where_now) / self._sweep_shape)
+        return ' '.join([str(x) + '%' for x in how_far])
+
     def _loop_generator(self):
         for n_loop, p in enumerate(it.product(*self.sweep_dict.values())):
             self._n_loop = n_loop
-            yield dict(zip(self.sweep_dict.keys(), p))
+            kwargs = dict(zip(self.sweep_dict.keys(), p))
+            # update default param dicts
+            for d in self.default_params:
+                update_dict_if_key_exists(d, kwargs)
+            yield self._how_far(), kwargs
