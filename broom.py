@@ -4,6 +4,7 @@ import itertools as it
 from collections import OrderedDict as odict
 import numpy as np
 from copy import deepcopy
+import pickle
 
 # inspiration from these sources:
 # http://stackoverflow.com/questions/5228158/cartesian-product-of-a-dictionary-of-lists
@@ -73,6 +74,28 @@ class Sweeper(object):
         np.array(np.unravel_index(self._n_loop, self._sweep_shape), dtype=float)
         how_far = list(100 * (1 + where_now) / self._sweep_shape)
         return ' '.join([str(x) + '%' for x in how_far])
+
+    def save_to_disk(self, fn='generic.sweep'):
+        """
+        saves important data to disk, these are:
+        self.results
+        self.default_params
+        self.sweep_dict
+
+        input:
+        fn: filename of saved file
+
+        note:
+        you cannot pickle (save) or copy objects with generators in python
+        hence this selection, else just saving self would be easier
+        """
+        to_save = {}
+        to_save['results'] = self.results
+        to_save['default_params'] = self.default_params
+        to_save['sweep_dict'] = self.sweep_dict
+        f = open(fn, 'w')
+        pickle.dump(to_save, f)
+        f.close()
 
     def _loop_generator(self):
         for n_loop, p in enumerate(it.product(*self.sweep_dict.values())):

@@ -44,4 +44,6 @@ for how_far, params in sw.looper:
     sw.append('res1', res1)
     sw.append('res2', res2)
 
+    sw.save_to_disk('saveme.sweep')
+
 print sw.results
