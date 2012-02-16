@@ -22,7 +22,9 @@ def update_dict_if_key_exists(updatee, updater):
     output:
     updatee is updated in-place, method style
     """
-    updatee.update({k: v for k, v in updater.iteritems() if k in updatee.keys()})
+    updatee.update({k: v
+        for k, v in updater.iteritems()
+        if k in updatee.keys()})
 
 
 class Sweeper(object):
@@ -74,6 +76,74 @@ class Sweeper(object):
         np.array(np.unravel_index(self._n_loop, self._sweep_shape), dtype=float)
         how_far = list(100 * (1 + where_now) / self._sweep_shape)
         return ' '.join([str(x) + '%' for x in how_far])
+
+    def plot_results(self, results_to_plot='all',
+            filename='results', **what_to_plot):
+        """
+        plot data contained in self.results
+
+        input:
+        results_to_plot: list of strings of results to include in plot.
+        default is all
+
+        filename: where to save plot
+
+        what_to_plot:
+        kwarg of the form: param1='x-axis', param2=[n1, n2, ..]
+        'x-axis': implies parameter on x-axis
+        [n1, n2, ..]: slice selecting specific values
+
+        if a sweeping parameter is not listed all values are plotted
+        """
+
+        import matplotlib as mpl
+        import sys
+        # this is for display-less stuff
+        if sys.platform != 'darwin': mpl.use('Agg')
+        import pylab as pl
+
+        if 'x-axis' not in what_to_plot.values():
+            raise ValueError('must specify parameter for x-axis')
+
+        print what_to_plot
+
+        # fill out what_to_plot dict with whats missing
+        what_to_plot_real = odict()
+        for k, v in self.sweep_dict.iteritems():
+            if k not in what_to_plot.keys():
+                what_to_plot_real.update({k: range(len(v))})
+            else:
+                what_to_plot_real.update({k: what_to_plot[k]})
+
+        # what_to_plot_real.update({k: range(len(v))
+        #     for k, v in self.sweep_dict.iteritems()
+        #     if k not in what_to_plot.keys()})
+
+        # sw.results['res1'][(0,[1,2,3],1)]
+
+        # get indexes for x-axis parameter
+        x_axis_idx = [range(len(self.sweep_dict[k]))
+            for k, v in what_to_plot.iteritems()
+            if v == 'x-axis'][0]
+
+        num_plots = np.prod([len(v)
+            for k, v in what_to_plot_real.iteritems()
+            if v != 'x-axis'])
+
+        # to use in it.product as x-axis values
+        x_axis_idxs = [x_axis_idx for n in range(num_plots)]
+
+        print x_axis_idxs
+        for idx_tuple in it.product():
+            pass
+        print num_plots
+        print 'x_axis_idx', x_axis_idx
+        nested_idx = []
+
+        print filename
+        print what_to_plot_real
+
+        return
 
     def save_to_disk(self, fn='generic.sweep'):
         """
