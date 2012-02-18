@@ -115,14 +115,12 @@ class Sweeper(object):
             else:
                 what_to_plot_real.update({k: what_to_plot[k]})
 
-        # what_to_plot_real.update({k: range(len(v))
-        #     for k, v in self.sweep_dict.iteritems()
-        #     if k not in what_to_plot.keys()})
-
-        # sw.results['res1'][(0,[1,2,3],1)]
-
         # get indexes for x-axis parameter
         x_axis_idx = [range(len(self.sweep_dict[k]))
+            for k, v in what_to_plot.iteritems()
+            if v == 'x-axis'][0]
+        # get x-axis param name
+        x_axis_param = [k
             for k, v in what_to_plot.iteritems()
             if v == 'x-axis'][0]
 
@@ -130,18 +128,31 @@ class Sweeper(object):
             for k, v in what_to_plot_real.iteritems()
             if v != 'x-axis'])
 
-        # to use in it.product as x-axis values
-        x_axis_idxs = [x_axis_idx for n in range(num_plots)]
+        # update x_axis param values
+        what_to_plot_real[x_axis_param] = [x_axis_idx]
 
-        print x_axis_idxs
-        for idx_tuple in it.product():
-            pass
-        print num_plots
-        print 'x_axis_idx', x_axis_idx
-        nested_idx = []
+        if results_to_plot == 'all':
+            results_to_plot = self.results.keys()
+        elif isinstance(results_to_plot, str):
+            results_to_plot = [results_to_plot]
 
-        print filename
-        print what_to_plot_real
+        pl.figure()
+
+        for r_plot in results_to_plot:
+            x = self.sweep_dict[x_axis_param]
+            for idx_tuple in it.product(*what_to_plot_real.values()):
+                label_str = r_plot
+                y = self.results[r_plot][idx_tuple]
+                # label string
+                for n, k in enumerate(what_to_plot_real.iterkeys()):
+                    i = idx_tuple[n]
+                    if isinstance(i, int):
+                        label_str += ',' + k + '=%.3f' % self.sweep_dict[k][i]
+                pl.plot(x, y, label=label_str)
+        pl.legend()
+        pl.xlabel(x_axis_param)
+        pl.ylabel(', '.join(results_to_plot))
+        pl.savefig(filename + '.pdf', format='pdf')
 
         return
 
