@@ -105,8 +105,6 @@ class Sweeper(object):
         if 'x-axis' not in what_to_plot.values():
             raise ValueError('must specify parameter for x-axis')
 
-        print what_to_plot
-
         # fill out what_to_plot dict with whats missing
         what_to_plot_real = odict()
         for k, v in self.sweep_dict.iteritems():
@@ -116,13 +114,10 @@ class Sweeper(object):
                 what_to_plot_real.update({k: what_to_plot[k]})
 
         # get indexes for x-axis parameter
-        x_axis_idx = [range(len(self.sweep_dict[k]))
+        xtmp = [(k, range(len(self.sweep_dict[k])))
             for k, v in what_to_plot.iteritems()
             if v == 'x-axis'][0]
-        # get x-axis param name
-        x_axis_param = [k
-            for k, v in what_to_plot.iteritems()
-            if v == 'x-axis'][0]
+        x_axis_param, x_axis_idx = xtmp
 
         num_plots = np.prod([len(v)
             for k, v in what_to_plot_real.iteritems()
