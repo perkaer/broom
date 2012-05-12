@@ -96,8 +96,37 @@ class Sweeper(object):
         if a sweeping parameter is not listed all values are plotted
         """
 
+# In [12]: ixgrid = np.ix_([01,],[0,1,2],[1])
+
+# In [13]: ixgrid = np.ix_([0,1],[0,1,2],[1])
+
+# In [14]: YY[ixgrid]
+# Out[14]:
+# array([[[41.28],
+#         [55.04],
+#         [68.8]],
+
+#        [[51.84],
+#         [69.12],
+#         [86.4]]], dtype=object)
+
+# In [15]: YY[ixgrid].shape
+# Out[15]: (2, 3, 1)
+
+# In [16]: YY[ixgrid].squeeze
+# Out[16]: <function squeeze>
+
+# In [17]: YY[ixgrid].squeeze()
+# Out[17]:
+# array([[41.28, 55.04, 68.8],
+#        [51.84, 69.12, 86.4]], dtype=object)
+
+# In [18]: YY
+# Out[18]:
+
         import matplotlib as mpl
         import sys
+        from matplotlib.font_manager import FontProperties
         # this is for display-less stuff
         if sys.platform != 'darwin': mpl.use('Agg')
         import pylab as pl
@@ -120,7 +149,7 @@ class Sweeper(object):
         x_axis_param, x_axis_idx = xtmp
 
         num_plots = np.prod([len(v)
-            for k, v in what_to_plot_real.iteritems()
+            for v in what_to_plot_real.itervalues()
             if v != 'x-axis'])
 
         # update x_axis param values
@@ -132,9 +161,9 @@ class Sweeper(object):
             results_to_plot = [results_to_plot]
 
         pl.figure()
-
+        label_str_list = []
+        x = self.sweep_dict[x_axis_param]
         for r_plot in results_to_plot:
-            x = self.sweep_dict[x_axis_param]
             for idx_tuple in it.product(*what_to_plot_real.values()):
                 label_str = r_plot
                 y = self.results[r_plot][idx_tuple]
@@ -142,12 +171,13 @@ class Sweeper(object):
                 for n, k in enumerate(what_to_plot_real.iterkeys()):
                     i = idx_tuple[n]
                     if isinstance(i, int):
-                        label_str += ',' + k + '=%.3f' % self.sweep_dict[k][i]
+                        label_str += ',' + k + '=%5.3e' % self.sweep_dict[k][i]
                 pl.plot(x, y, label=label_str)
-        pl.legend()
+        pl.legend(loc='best', prop=FontProperties(size=7))
         pl.xlabel(x_axis_param)
         pl.ylabel(', '.join(results_to_plot))
         pl.savefig(filename + '.pdf', format='pdf')
+        pl.close('all')
 
         return
 

@@ -5,11 +5,12 @@ import numpy as np
 
 # define the dict keys and values to loop over like this. the order they
 # are added determines at which level they are in the nested for loop
-dicts = [{'a': np.arange(1, 3) * 1.1},
-        {'b': np.arange(3, 10) * 3.2},
-        {'c': np.arange(0, 3) * 3.2}]
+dicts_list = [
+    {'a': np.arange(1, 3) * 1e8 * 1.1},
+    {'b': np.arange(3, 10) * 1e-6 * 3.2},
+    {'c': np.arange(0, 3) * 3.2}]
 
-sw = broom.Sweeper(dicts, result_names=['res1', 'res2'])
+sw = broom.Sweeper(dicts_list, result_names=['res1', 'res2'])
 
 # dicts containing default parameters
 default_params1 = {'a': 5,
