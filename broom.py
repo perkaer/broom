@@ -160,7 +160,8 @@ class Sweeper(object):
         elif isinstance(results_to_plot, str):
             results_to_plot = [results_to_plot]
 
-        pl.figure()
+        fig = pl.figure(figsize=(10, 6))
+        ax = fig.add_axes([0.075, 0.085, 0.65, 0.86])
         label_str_list = []
         x = self.sweep_dict[x_axis_param]
         for r_plot in results_to_plot:
@@ -172,10 +173,11 @@ class Sweeper(object):
                     i = idx_tuple[n]
                     if isinstance(i, int):
                         label_str += ',' + k + '=%5.3e' % self.sweep_dict[k][i]
-                pl.plot(x, y, label=label_str)
-        pl.legend(loc='best', prop=FontProperties(size=7))
-        pl.xlabel(x_axis_param)
-        pl.ylabel(', '.join(results_to_plot))
+                ax.plot(x, y, label=label_str)
+        ax.legend(loc=(1.01, 0.03), prop=FontProperties(size=6))
+        # pl.legend(loc='best', prop=FontProperties(size=5))
+        ax.set_xlabel(x_axis_param)
+        ax.set_ylabel(', '.join(results_to_plot))
         pl.savefig(filename + '.pdf', format='pdf')
         pl.close('all')
 
