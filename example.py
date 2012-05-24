@@ -6,7 +6,7 @@ import numpy as np
 # define the dict keys and values to loop over like this. the order they
 # are added determines at which level they are in the nested for loop
 dicts_list = [
-    {'a': np.arange(1, 3) * 1e8 * 1.1},
+    {'a': np.arange(1, 6) * 1e8 * 1.1},
     {'b': np.arange(3, 10) * 1e-6 * 3.2},
     {'c': np.arange(0, 3) * 3.2}]
 
