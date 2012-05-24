@@ -173,7 +173,7 @@ class Sweeper(object):
                     i = idx_tuple[n]
                     if isinstance(i, int):
                         label_str += ',' + k + '=%5.3e' % self.sweep_dict[k][i]
-                ax.plot(x, y, label=label_str)
+                ax.plot(x, y, '.', label=label_str)
         ax.legend(loc=(1.01, 0.03), prop=FontProperties(size=6))
         # pl.legend(loc='best', prop=FontProperties(size=5))
         ax.set_xlabel(x_axis_param)
