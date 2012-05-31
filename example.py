@@ -50,5 +50,12 @@ for how_far, params in sw.looper:
     sw.save_to_disk('saveme.sweep')
 
 print sw.results
-sw.plot_results(filename='all_results', results_to_plot='all', b='x-axis')
-sw.plot_results(filename='res1', results_to_plot='res1', b='x-axis')
+sw.plot_results(filename='all_results',
+    results_to_plot='all', b='x-axis')
+sw.plot_results(filename='res1',
+    results_to_plot='res1', b='x-axis')
+
+sw.plot_results(filename='semilogx_all_results', plot_fct='loglog',
+    results_to_plot='all', b='x-axis')
+sw.plot_results(filename='semilogx_res1', plot_fct='loglog',
+    results_to_plot='res1', b='x-axis')

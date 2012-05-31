@@ -78,7 +78,7 @@ class Sweeper(object):
         return ' '.join([str(x) + '%' for x in how_far])
 
     def plot_results(self, results_to_plot='all',
-            filename='results', **what_to_plot):
+            filename='results', plot_fct='plot', **what_to_plot):
         """
         plot data contained in self.results
 
@@ -164,9 +164,11 @@ class Sweeper(object):
             results_to_plot = [results_to_plot]
 
         fig = pl.figure(figsize=(10, 6))
-        ax = fig.add_axes([0.075, 0.085, 0.65, 0.86])
+        ax = fig.add_axes([0.085, 0.085, 0.65, 0.86])
         label_str_list = []
         x = self.sweep_dict[x_axis_param]
+        markersize = 4
+
         for r_plot in results_to_plot:
             for idx_tuple in it.product(*what_to_plot_real.values()):
                 label_str = r_plot
@@ -176,7 +178,35 @@ class Sweeper(object):
                     i = idx_tuple[n]
                     if isinstance(i, int):
                         label_str += ',' + k + '=%5.3e' % self.sweep_dict[k][i]
-                ax.plot(x, y, linestyler.next(), label=label_str, markersize=4)
+                if plot_fct == 'plot':
+                    ax.plot(
+                        x, y,
+                        linestyler.next(),
+                        label=label_str,
+                        markersize=markersize)
+                elif plot_fct == 'semilogx':
+                    ax.semilogx(
+                        x, y,
+                        linestyler.next(),
+                        label=label_str,
+                        markersize=markersize)
+                elif plot_fct == 'semilogy':
+                    ax.semilogy(
+                        x, y,
+                        linestyler.next(),
+                        label=label_str,
+                        markersize=markersize)
+                elif plot_fct == 'loglog':
+                    ax.loglog(
+                        x, y,
+                        linestyler.next(),
+                        label=label_str,
+                        markersize=markersize)
+                else:
+                    raise ValueError('plot_fct must a plot fct from pylab')
+
+        if plot_fct == 'plot':
+            ax.ticklabel_format(style='sci', useOffset=False, axis='both')
         ax.legend(loc=(1.01, 0.03), prop=FontProperties(size=6))
         # pl.legend(loc='best', prop=FontProperties(size=5))
         ax.set_xlabel(x_axis_param)
