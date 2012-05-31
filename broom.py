@@ -78,7 +78,8 @@ class Sweeper(object):
         return ' '.join([str(x) + '%' for x in how_far])
 
     def plot_results(self, results_to_plot='all',
-            filename='results', plot_fct='plot', **what_to_plot):
+            filename='results', plot_fct='plot',
+            plot_title='joe', **what_to_plot):
         """
         plot data contained in self.results
 
@@ -164,7 +165,7 @@ class Sweeper(object):
             results_to_plot = [results_to_plot]
 
         fig = pl.figure(figsize=(10, 6))
-        ax = fig.add_axes([0.085, 0.085, 0.65, 0.86])
+        ax = fig.add_axes([0.085, 0.085, 0.65, 0.8])
         label_str_list = []
         x = self.sweep_dict[x_axis_param]
         markersize = 4
@@ -211,6 +212,7 @@ class Sweeper(object):
         # pl.legend(loc='best', prop=FontProperties(size=5))
         ax.set_xlabel(x_axis_param)
         ax.set_ylabel(', '.join(results_to_plot))
+        fig.text(0.5, 0.99, plot_title, ha='center', va='top', color='black', size=6)
         pl.savefig(filename + '.pdf', format='pdf')
         pl.close('all')
 
