@@ -209,7 +209,7 @@ class Sweeper(object):
         if plot_fct == 'plot':
             ax.ticklabel_format(style='sci', useOffset=False, axis='both')
         ax.legend(loc=(1.01, 0.03), prop=FontProperties(size=6))
-        # pl.legend(loc='best', prop=FontProperties(size=5))
+        ax.grid()
         ax.set_xlabel(x_axis_param)
         ax.set_ylabel(', '.join(results_to_plot))
         fig.text(0.5, 0.99, plot_title, ha='center', va='top', color='black', size=6)
