@@ -33,16 +33,18 @@ class Sweeper(object):
     of looping over nested loops
     """
 
-    def __init__(self, dicts, result_names=None):
-        # add input dicts to OrderedDict
-        self.sweep_dict = odict()
-        for a in dicts:
-            self.sweep_dict.update(a)
+    def __init__(self, dicts=None, result_names=None):
+
+        if dicts is not None:
+            # add input dicts to OrderedDict
+            self.sweep_dict = odict()
+            for a in dicts:
+                self.sweep_dict.update(a)
+
+            # generator object
+            self.looper = self._loop_generator()
 
         self._create_results_dict(result_names)
-
-        # generator object
-        self.looper = self._loop_generator()
 
     def _create_results_dict(self, result_names):
         if result_names is not None:
@@ -206,7 +208,7 @@ class Sweeper(object):
                 else:
                     raise ValueError('plot_fct must a plot fct from pylab')
 
-        if plot_fct == 'plot':
+        if plot_fct in ['plot', 'semilogx']:
             ax.ticklabel_format(style='sci', useOffset=False, axis='both')
         ax.legend(loc=(1.01, 0.03), prop=FontProperties(size=6))
         ax.grid()
@@ -238,6 +240,30 @@ class Sweeper(object):
         to_save['sweep_dict'] = self.sweep_dict
         f = open(fn, 'w')
         pickle.dump(to_save, f)
+        f.close()
+
+    def load_from_disk(self, fn='generic.sweep'):
+        """
+        loads important data from disk, these are:
+        self.results
+        self.default_params
+        self.sweep_dict
+
+        input:
+        fn: filename of file to load
+
+        note:
+        you cannot pickle (save) or copy objects with generators in python
+        hence this selection, else just saving self would be easier
+        """
+
+        f = open(fn, 'r')
+        pickf = pickle.load(f)
+
+        self.results = pickf['results']
+        self.default_params = pickf['default_params']
+        self.sweep_dict = pickf['sweep_dict']
+
         f.close()
 
     def _loop_generator(self):
