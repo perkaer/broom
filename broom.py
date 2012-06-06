@@ -208,8 +208,13 @@ class Sweeper(object):
                 else:
                     raise ValueError('plot_fct must a plot fct from pylab')
 
-        if plot_fct in ['plot', 'semilogx']:
+        if plot_fct == 'plot':
             ax.ticklabel_format(style='sci', useOffset=False, axis='both')
+        elif plot_fct == 'semilogx':
+            ax.ticklabel_format(style='sci', useOffset=False, axis='y')
+        elif plot_fct == 'semilogy':
+            ax.ticklabel_format(style='sci', useOffset=False, axis='x')
+
         ax.legend(loc=(1.01, 0.03), prop=FontProperties(size=6))
         ax.grid()
         ax.set_xlabel(x_axis_param)
