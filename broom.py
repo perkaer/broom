@@ -81,6 +81,7 @@ class Sweeper(object):
 
     def plot_results(self, results_to_plot='all',
             filename='results', plot_fct='plot',
+            plot_marker=True,
             plot_title='joe', **what_to_plot):
         """
         plot data contained in self.results
@@ -158,8 +159,13 @@ class Sweeper(object):
         # update x_axis param values
         what_to_plot_real[x_axis_param] = [x_axis_idx]
 
+        if plot_marker:
+            marker_str = 'osv'
+        else:
+            marker_str = ['']
+
         linestyler = it.cycle([''.join(n)
-            for n in it.product('osv', ['-', '--', ':'], 'rbgcmk')])
+            for n in it.product(marker_str, ['-', '--', ':'], 'rbgcmk')])
 
         if results_to_plot == 'all':
             results_to_plot = self.results.keys()
