@@ -97,6 +97,8 @@ class Sweeper(object):
         'x-axis': implies parameter on x-axis
         [n1, n2, ..]: slice selecting specific values
 
+        plot_marker: plot marker or not
+
         if a sweeping parameter is not listed all values are plotted
         """
 
@@ -228,6 +230,68 @@ class Sweeper(object):
         fig.text(0.5, 0.99, plot_title, ha='center', va='top', color='black', size=6)
         pl.savefig(filename + '.pdf', format='pdf')
         pl.close('all')
+
+        return
+
+    def plot3d_results(self, x_axis=None, y_axis=None, results_to_plot=None,
+            filename='results', **what_to_plot):
+
+        """plots data in self.results in a 3d plot
+
+        input:
+
+        what_to_plot: keyword arguments of sweep parameters to plot.
+        default is to plot all combinations
+        example: ..., sweep1 = [0], sweep2 = [3, 7], ...
+
+        """
+
+        import matplotlib as mpl
+        import sys
+        from matplotlib.font_manager import FontProperties
+        # this is for display-less stuff
+        if sys.platform != 'darwin': mpl.use('Agg')
+        import pylab as pl
+
+        if x_axis is None or y_axis is None:
+            raise ValueError('you must specify x_axis and y_axis')
+
+        if (x_axis not in self.sweep_dict.keys() or
+            y_axis not in self.sweep_dict.keys()):
+            raise ValueError('invalid x_axis and y_axis')
+
+        # build list containing all combinations of sweep params to plot
+        uber_which_list = []
+
+        if not what_to_plot:
+            for k, v in self.sweep_dict.iteritems():
+                if k == x_axis or k == y_axis:
+                    uber_which_list.append([slice(0, len(v))])
+                else:
+                    uber_which_list.append(range(len(v)))
+        else:
+            raise NotImplementedError('not yet :)')
+
+        print uber_which_list
+
+        if results_to_plot is None:
+            raise ValueError('results_to_plot is None.. :)')
+        else:
+            for n, which_list in enumerate(it.product(*uber_which_list)):
+
+                sub_results_arr = self.results[results_to_plot][which_list]
+
+                XX, YY = np.meshgrid(
+                    self.sweep_dict[x_axis],
+                    self.sweep_dict[y_axis])
+
+                if not XX.shape == sub_results_arr.shape:
+                    sub_results_arr = sub_results_arr.transpose()
+
+                pl.pcolormesh(XX, YY, sub_results_arr)
+                pl.axis('tight')
+                pl.savefig(filename + str(n) + '.pdf')
+                pl.close()
 
         return
 

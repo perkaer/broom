@@ -6,9 +6,9 @@ import numpy as np
 # define the dict keys and values to loop over like this. the order they
 # are added determines at which level they are in the nested for loop
 dicts_list = [
-    {'a': np.arange(1, 6) * 1e8 * 1.1},
-    {'b': np.arange(3, 10) * 1e-6 * 3.2},
-    {'c': np.arange(0, 3) * 3.2}]
+    {'a': np.arange(1, 5) * 1.1},
+    {'b': np.arange(3, 5) * 3.2},
+    {'c': np.arange(0, 3.14, 0.2)}]
 
 sw = broom.Sweeper(dicts_list, result_names=['res1', 'res2'])
 
@@ -28,11 +28,12 @@ sw.default_params(default_params1, default_params2)
 
 
 def calculate_stuff1(a=1, b=2, c=4, stringjoe='joe'):
-    return (a + c) * b
+    # return (a + c) * b
+    return a * np.sin(b * c) ** 2 * np.exp(- c)
 
 
 def calculate_stuff2(a=7, b=2, c=5, stringjoe='moe'):
-    return (b + c) * a
+    return a * np.cos(b * c) * np.exp(- c) + 1
 
 
 # the self.looper attribute is to be looped over
@@ -51,11 +52,13 @@ for how_far, params in sw.looper:
 
 print sw.results
 sw.plot_results(filename='all_results',
-    results_to_plot='all', plot_title=str(default_params1), b='x-axis')
+    results_to_plot='all', plot_title=str(default_params1), c='x-axis')
 sw.plot_results(filename='res1',
-    results_to_plot='res1', b='x-axis')
+    results_to_plot='res1', c='x-axis')
 
-sw.plot_results(filename='semilogx_all_results', plot_fct='loglog',
-    results_to_plot='all', b='x-axis')
-sw.plot_results(filename='semilogx_res1', plot_fct='loglog',
-    results_to_plot='res1', b='x-axis')
+sw.plot3d_results(x_axis='a', y_axis='c', results_to_plot='res1')
+
+# sw.plot_results(filename='semilogx_all_results', plot_fct='loglog',
+#     results_to_plot='all', c='x-axis')
+# sw.plot_results(filename='semilogx_res1', plot_fct='loglog',
+#     results_to_plot='res1', c='x-axis')
