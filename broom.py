@@ -102,34 +102,6 @@ class Sweeper(object):
         if a sweeping parameter is not listed all values are plotted
         """
 
-# In [12]: ixgrid = np.ix_([01,],[0,1,2],[1])
-
-# In [13]: ixgrid = np.ix_([0,1],[0,1,2],[1])
-
-# In [14]: YY[ixgrid]
-# Out[14]:
-# array([[[41.28],
-#         [55.04],
-#         [68.8]],
-
-#        [[51.84],
-#         [69.12],
-#         [86.4]]], dtype=object)
-
-# In [15]: YY[ixgrid].shape
-# Out[15]: (2, 3, 1)
-
-# In [16]: YY[ixgrid].squeeze
-# Out[16]: <function squeeze>
-
-# In [17]: YY[ixgrid].squeeze()
-# Out[17]:
-# array([[41.28, 55.04, 68.8],
-#        [51.84, 69.12, 86.4]], dtype=object)
-
-# In [18]: YY
-# Out[18]:
-
         import matplotlib as mpl
         import sys
         from matplotlib.font_manager import FontProperties
@@ -234,11 +206,20 @@ class Sweeper(object):
         return
 
     def plot3d_results(self, x_axis=None, y_axis=None, results_to_plot=None,
-            filename='results', **what_to_plot):
+            filename='results', plot_title='joe', logplot=None,
+            **what_to_plot):
 
         """plots data in self.results in a 3d plot
 
         input:
+
+        x_axis: select sweep parameter for x-axis
+
+        y_axis: see x_axis
+
+        results_to_plot: string with result to plot
+
+        logplot: take log on axes logplot, 'x', 'y', 'both'
 
         what_to_plot: keyword arguments of sweep parameters to plot.
         default is to plot all combinations
@@ -272,25 +253,52 @@ class Sweeper(object):
         else:
             raise NotImplementedError('not yet :)')
 
-        print uber_which_list
-
         if results_to_plot is None:
             raise ValueError('results_to_plot is None.. :)')
         else:
+
+            xx_ax = self.sweep_dict[x_axis]
+            yy_ax = self.sweep_dict[y_axis]
+
+            xlabel = x_axis
+            ylabel = y_axis
+
+            if logplot == 'x':
+                xx_ax = np.log(xx_ax)
+                xlabel = 'log(' + x_axis + ')'
+            elif logplot == 'y':
+                yy_ax = np.log(yy_ax)
+                ylabel = 'log(' + y_axis + ')'
+            elif logplot == 'both':
+                xx_ax = np.log(xx_ax)
+                yy_ax = np.log(yy_ax)
+                xlabel = 'log(' + x_axis + ')'
+                ylabel = 'log(' + y_axis + ')'
+
+            XX, YY = np.meshgrid(xx_ax, yy_ax)
+
             for n, which_list in enumerate(it.product(*uber_which_list)):
 
                 sub_results_arr = self.results[results_to_plot][which_list]
 
-                XX, YY = np.meshgrid(
-                    self.sweep_dict[x_axis],
-                    self.sweep_dict[y_axis])
-
                 if not XX.shape == sub_results_arr.shape:
                     sub_results_arr = sub_results_arr.transpose()
 
+                # handle nan's
+                sub_results_arr = np.ma.masked_where(
+                    np.isnan(sub_results_arr.astype(float)),
+                    sub_results_arr.astype(float))
+
+                # for subplot version, use pl.subplots ans iterate over
+                # axes grid
+
                 pl.pcolormesh(XX, YY, sub_results_arr)
+                pl.xlabel(xlabel)
+                pl.ylabel(ylabel)
+                pl.colorbar()
                 pl.axis('tight')
-                pl.savefig(filename + str(n) + '.pdf')
+                pl.title(plot_title, fontsize=6)
+                pl.savefig(filename + '_' + str(n) + '.pdf')
                 pl.close()
 
         return

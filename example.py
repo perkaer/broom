@@ -8,7 +8,7 @@ import numpy as np
 dicts_list = [
     {'a': np.arange(1, 5) * 1.1},
     {'b': np.arange(3, 5) * 3.2},
-    {'c': np.arange(0, 3.14, 0.2)}]
+    {'c': np.arange(0.1, 3.14, 0.2)}]
 
 sw = broom.Sweeper(dicts_list, result_names=['res1', 'res2'])
 
@@ -50,13 +50,19 @@ for how_far, params in sw.looper:
 
     sw.save_to_disk('saveme.sweep')
 
+
 print sw.results
+
 sw.plot_results(filename='all_results',
     results_to_plot='all', plot_title=str(default_params1), c='x-axis')
 sw.plot_results(filename='res1',
     results_to_plot='res1', c='x-axis')
 
-sw.plot3d_results(x_axis='a', y_axis='c', results_to_plot='res1')
+sw.plot3d_results(
+    x_axis='a', y_axis='c',
+    results_to_plot='res1', plot_title='sada',
+    logplot='both')
+
 
 # sw.plot_results(filename='semilogx_all_results', plot_fct='loglog',
 #     results_to_plot='all', c='x-axis')
