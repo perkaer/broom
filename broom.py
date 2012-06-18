@@ -195,7 +195,7 @@ class Sweeper(object):
         elif plot_fct == 'semilogy':
             ax.ticklabel_format(style='sci', useOffset=False, axis='x')
 
-        ax.legend(loc=(1.01, 0.03), prop=FontProperties(size=6))
+        ax.legend(loc=(1.01, 0.03), handlelength=2.5, prop=FontProperties(size=6))
         ax.grid()
         ax.set_xlabel(x_axis_param)
         ax.set_ylabel(', '.join(results_to_plot))
@@ -289,6 +289,15 @@ class Sweeper(object):
                     np.isnan(sub_results_arr.astype(float)),
                     sub_results_arr.astype(float))
 
+                now_params = ''
+                for m, p in enumerate(which_list):
+                    if not isinstance(p, slice):
+                        now_params += \
+                            self.sweep_dict.keys()[m] \
+                            + ' : ' + \
+                            str(self.sweep_dict[self.sweep_dict.keys()[m]][p]) \
+                            + ', '
+
                 # for subplot version, use pl.subplots ans iterate over
                 # axes grid
 
@@ -297,7 +306,7 @@ class Sweeper(object):
                 pl.ylabel(ylabel)
                 pl.colorbar()
                 pl.axis('tight')
-                pl.title(plot_title, fontsize=6)
+                pl.title(plot_title + '\n' + now_params, fontsize=6)
                 pl.savefig(filename + '_' + str(n) + '.pdf')
                 pl.close()
 
