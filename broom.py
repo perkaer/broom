@@ -82,7 +82,7 @@ class Sweeper(object):
     def plot_results(self, results_to_plot='all',
             filename='results', plot_fct='plot',
             plot_marker=True,
-            plot_title='joe', **what_to_plot):
+            plot_title=None, **what_to_plot):
         """
         plot data contained in self.results
 
@@ -91,6 +91,9 @@ class Sweeper(object):
         default is all
 
         filename: where to save plot
+
+        plot_title: string with plot title
+        default is self.default_params
 
         what_to_plot:
         kwarg of the form: param1='x-axis', param2=[n1, n2, ..]
@@ -199,6 +202,8 @@ class Sweeper(object):
         ax.grid()
         ax.set_xlabel(x_axis_param)
         ax.set_ylabel(', '.join(results_to_plot))
+        if plot_title is None:
+            plot_title = '\n'.join([str(defpar) for defpar in self.default_params])
         fig.text(0.5, 0.99, plot_title, ha='center', va='top', color='black', size=6)
         pl.savefig(filename + '.pdf', format='pdf')
         pl.close('all')
